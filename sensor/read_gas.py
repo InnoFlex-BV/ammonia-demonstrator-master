@@ -4,7 +4,7 @@ import serial
 import time
 
 ## setting for RS485
-device = minimalmodbus.Instrument('/dev/ttyUSB0', 3)
+device = minimalmodbus.Instrument('/dev/ttyUSB0', 2)
 device.serial.baudrate = 9600
 device.serial.bytesize = 8
 device.serial.parity = serial.PARITY_NONE
