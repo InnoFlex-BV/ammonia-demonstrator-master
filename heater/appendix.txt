@@ -1,0 +1,4 @@
+website of relay (wiki):
+https://wiki.diustou.com/en/RS485_Modbus_Relay
+
+the device does not support minimalmodbus (cant read response/return), need to use Pyserial
