@@ -9,8 +9,10 @@ client.connect(broker_ip, 1883, 60)
 
 try:
     while True:
-        test_value = random.randint(0, 5)
-        client.publish("master/test", test_value)
+        #test_value = random.randint(0, 5)
+        random_value = random.choice([True, False])
+        test_value = "true" if random_value else "false"
+        client.publish("master/inlet/heater_relay", test_value)
         print(f"[Master] Published: {test_value}")
         time.sleep(2)
 except KeyboardInterrupt:
