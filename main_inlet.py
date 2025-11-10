@@ -1,10 +1,11 @@
 import time
 
 from sensor.read_gas import read_sensor as read_gas
+from sensor.read_HG803 import read_sensor as read_HG803
 
 tasks = [
     {"func": read_gas, "interval": 2, "next_run": 0},
-    #{"func": read_heater, "interval": 5, "next_run": 0},
+    {"func": read_HG803, "interval": 3, "next_run": 0},
     #{"func": read_fan, "interval": 10, "next_run": 0},
 ]
 
