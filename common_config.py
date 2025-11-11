@@ -1,17 +1,33 @@
 import minimalmodbus
 import paho.mqtt.client as mqtt
+import threading
 
-def create_device(port = "/dev/ttyUSB0", slave_address = 1, broker_ip = "127.0.0.1"):
-    # initialiation of RS485 device
-    device = minimalmodbus.Instrument(port, slave_address)
-    device.serial.baudrate = 9600
-    device.serial.parity = minimalmodbus.serial.PARITY_NONE
-    device.serial.stopbits = 1
-    device.serial.bytesize = 8
-    device.serial.timeout = 0.5
-    device.mode = minimalmodbus.MODE_RTU
 
-    # initialization of MQTT
-    client = mqtt.Client(client_id="InletPi")
-    client.connect(broker_ip, 1883, 60)
-    return device, client
+serial_lock = threading.Lock()
+
+
+# initialize MQTT client
+broker_ip = "127.0.0.1"
+common_client = mqtt.Client(client_id="InletPi")
+common_client.connect(broker_ip, 1883, 60)
+
+PORT = "/dev/ttyUSB0"
+
+devices = {}
+
+def create_device(slave_address):
+    if slave_address in devices:
+        return devices[slave_address]
+    common_device = minimalmodbus.Instrument(PORT, slave_address)
+    common_device.serial.baudrate = 9600
+    common_device.serial.bytesize = 8
+    common_device.serial.parity = minimalmodbus.serial.PARITY_NONE
+    common_device.serial.stopbits = 1
+    common_device.serial.timeout = 0.5
+    common_device.mode = minimalmodbus.MODE_RTU
+
+    devices[slave_address] = common_device
+    return common_device
+
+def create_client():
+    return common_client
