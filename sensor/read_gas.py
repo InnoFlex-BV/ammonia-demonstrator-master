@@ -8,7 +8,8 @@ def read_sensor():
     with serial_lock:
         t0 = time.time()
         values = device.read_registers(registeraddress=0x0000, number_of_registers=2, functioncode=3)
-        print(f"[{time.time() - t0:.3f}s] gas read done")
+        print(f"gas read time: [{time.time() - t0:.3f}s]")
+    time.sleep(0.1)
     gas1 = values[0]*5/4095 # turn analog into 0-5V voltage
     gas2 = values[1]*5/4095
     client.publish("master/inlet/ammonia1", gas1)
