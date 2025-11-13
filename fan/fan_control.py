@@ -2,7 +2,7 @@ from common_config import create_device, create_client
 import threading
 import time
 
-serial_lock = threading.lock()
+serial_lock = threading.Lock()
 
 class FanControll:
     def __init__(self, slave_address=4, mqtt_topic="master/inlet/fan_in"):
@@ -16,8 +16,9 @@ class FanControll:
         # MQTT settings
         self.client = create_client()
         self.topic = mqtt_topic
-        self.client.message_callback_add(self.topic, self.on_message)
+        self.client.on_message = self.on_message
         self.client.subscribe(self.topic)
+        self.client.loop_start()
 
 
     def fan_initialzation(self):
@@ -29,7 +30,7 @@ class FanControll:
         time.sleep(0.25)    
         self.device.write_register(registeraddress=30, value=1, functioncode=6)
         time.sleep(0.25)
-        print("fan_in initialization finished")
+        print("fan_in initialization finished. Current speed: 0")
 
 
     def on_message(self, client, userdata, msg):
@@ -42,12 +43,13 @@ class FanControll:
 
     
     def fan_control(self):
-        if self.fan_device is None:
+        if self.device is None:
             print("[FanControll] Fan not initialized.")
             return
 
         if self.new_speed is not None and self.new_speed != self.old_speed:
             with self.lock:
-                self.fan_device.write_register(registeraddress=30, value=self.new_speed, functioncode=6)
+                self.device.write_register(registeraddress=30, value=self.new_speed, functioncode=6)
+                time.sleep(0.1)
                 print(f"[FanControll] Set fan speed to {self.new_speed}%")
                 self.old_speed = self.new_speed

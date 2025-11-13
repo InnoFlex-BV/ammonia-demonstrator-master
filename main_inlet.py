@@ -12,9 +12,9 @@ fan_in.fan_initialzation()
 tasks = [
     {"func": read_gas, "interval": 2, "next_run": 0},
     {"func": read_HG803, "interval": 3, "next_run": 0},
-    {"func": fan_in.fan_control, "interval": 2, "next_run": 0},
-    #{"func": read_fan, "interval": 10, "next_run": 0},
-    {"func": read_random, "interval": 1, "next_run": 0}
+    {"func": fan_in.fan_control, "interval": 5, "next_run": 0},
+    #{"func": read_fan, "interval": 10, "next_run": 0.3},
+    #{"func": read_random, "interval": 1, "next_run": 0.4}
 ]
 
 try:
@@ -28,3 +28,5 @@ try:
 
 except KeyboardInterrupt:
     print("\n Exiting programm ...")
+    fan_in.client.loop_stop()
+    fan_in.client.disconnect()
