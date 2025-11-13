@@ -4,7 +4,7 @@ from calculate_crc import calc_crc
 
 
 port_name = "/dev/ttyUSB0"
-baudrates = [4800, 9600, 19200]
+baudrates = [9600] # possible baudrate
 
 
 def build_write_address_frame(addr):
