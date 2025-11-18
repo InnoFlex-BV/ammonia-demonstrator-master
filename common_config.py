@@ -2,6 +2,7 @@ import minimalmodbus
 import paho.mqtt.client as mqtt
 import threading
 import serial
+import time
 
 
 serial_lock = threading.Lock()
@@ -35,5 +36,21 @@ def create_client():
 
 
 def clear_RS485(device: minimalmodbus.Instrument):
-    device.serial.reset_input_buffer()
-    device.serial.reset_output_buffer()
+    try:
+        device.serial.reset_input_buffer()
+        device.serial.reset_output_buffer()
+    
+    except Exception as e:
+        print(f"clear RS485 warning: {e}")
+
+
+def strong_clear_RS485(device: minimalmodbus.Instrument):
+    try:
+        device.serial.reset_input_buffer()
+        device.serial.reset_output_buffer()
+
+        device.serial.write(b'\xFF' * 4)
+        time.sleep(0.05) 
+        
+    except Exception as e:
+        print(f"Strong clear RS485 warning: {e}")

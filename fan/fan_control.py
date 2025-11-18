@@ -5,7 +5,7 @@ import time
 serial_lock = threading.Lock()
 
 class FanControll:
-    def __init__(self, slave_address=4, mqtt_topic="master/inlet/fan_in"):
+    def __init__(self, slave_address=4, mqtt_topic="master/inlet/fan_in", client = None):
         # create an object
         self.slave_address = slave_address
         self.device = None
@@ -14,24 +14,28 @@ class FanControll:
         self.lock = serial_lock
 
         # MQTT settings
-        self.client = create_client()
+        if client is None:
+            self.client = create_client()
+            self.client.loop_start()
+        else:
+            self.client = client
         self.topic = mqtt_topic
         self.client.on_message = self.on_message
         self.client.subscribe(self.topic)
-        self.client.loop_start()
 
 
     def fan_initialzation(self):
         self.device = create_device(self.slave_address)
 
         clear_RS485(self.device)
-        self.device.write_register(registeraddress=6, value=1, functioncode=6)
-        time.sleep(0.25)
-        self.device.write_register(registeraddress=7, value=1, functioncode=6)
-        time.sleep(0.25)    
-        self.device.write_register(registeraddress=30, value=1, functioncode=6)
-        time.sleep(0.25)
-        print("fan_in initialization finished. Current speed: 0")
+        with self.lock:
+            self.device.write_register(registeraddress=6, value=1, functioncode=6)
+            time.sleep(0.25)
+            self.device.write_register(registeraddress=7, value=1, functioncode=6)
+            time.sleep(0.25)    
+            self.device.write_register(registeraddress=30, value=1, functioncode=6)
+            time.sleep(0.25)
+            print("fan_in initialization finished. Current speed: 0")
 
 
     def on_message(self, client, userdata, msg):

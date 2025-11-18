@@ -1,9 +1,10 @@
 from common_config import create_device, create_client, clear_RS485, serial_lock
 import time
 
-def read_sensor():
+def read_sensor(client = None):
     device = create_device(slave_address=2)
-    client = create_client()
+    if client is None:
+        client = create_client()
     
     with serial_lock:
         clear_RS485(device=device)
@@ -15,7 +16,7 @@ def read_sensor():
     gas2 = values[1]*5/4095
     client.publish("master/inlet/ammonia1", gas1)
     client.publish("master/inlet/ammonia2", gas2)
-    print(f"gas1: {gas1:1f}, gas2: {gas2:1f}")
+    print(f"[ReadGas] gas1: {gas1:1f}, gas2: {gas2:1f}")
 
 
 

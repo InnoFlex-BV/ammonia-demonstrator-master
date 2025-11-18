@@ -2,9 +2,10 @@ from common_config import create_device, create_client, clear_RS485,serial_lock
 import time
 
 
-def read_sensor():
+def read_sensor(client = None):
         device = create_device(slave_address=3)
-        client = create_client()
+        if client is None:
+                client = create_client()
 
         with serial_lock:
                 #t0 = time.time()
@@ -17,4 +18,4 @@ def read_sensor():
         humidity = data[1]/100
         client.publish("master/inlet/temperature", temperature)
         client.publish("master/inlet/humidity", humidity)
-        print(f"Temperature: {temperature} degree, Humidity: {humidity} %")
+        print(f"[ReadHG803] Temperature: {temperature} degree, Humidity: {humidity} %")
