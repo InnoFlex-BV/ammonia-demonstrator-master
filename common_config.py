@@ -1,6 +1,7 @@
 import minimalmodbus
 import paho.mqtt.client as mqtt
 import threading
+import serial
 
 
 serial_lock = threading.Lock()
@@ -31,3 +32,8 @@ def create_device(slave_address):
 
 def create_client():
     return common_client
+
+
+def clear_RS485(device: minimalmodbus.Instrument):
+    device.serial.reset_input_buffer()
+    device.serial.reset_output_buffer()

@@ -1,4 +1,4 @@
-from common_config import create_device, create_client
+from common_config import create_device, create_client, clear_RS485
 import threading
 import time
 
@@ -23,7 +23,8 @@ class FanControll:
 
     def fan_initialzation(self):
         self.device = create_device(self.slave_address)
-        
+
+        clear_RS485(self.device)
         self.device.write_register(registeraddress=6, value=1, functioncode=6)
         time.sleep(0.25)
         self.device.write_register(registeraddress=7, value=1, functioncode=6)
@@ -49,7 +50,18 @@ class FanControll:
 
         if self.new_speed is not None and self.new_speed != self.old_speed:
             with self.lock:
+                clear_RS485(self.device)
                 self.device.write_register(registeraddress=30, value=self.new_speed, functioncode=6)
                 time.sleep(0.1)
                 print(f"[FanControll] Set fan speed to {self.new_speed}%")
                 self.old_speed = self.new_speed
+    
+
+    def fan_stop(self):
+        with self.lock:
+            clear_RS485(self.device)
+            self.device.write_register(registeraddress=30, value=0, functioncode=6)
+            time.sleep(0.1)
+            print("[Fan Controll] Fan stopped. Speed = 0")
+            self.client.loop_stop()
+            self.client.disconnect()
