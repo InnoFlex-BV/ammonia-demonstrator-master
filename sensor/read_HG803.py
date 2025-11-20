@@ -8,11 +8,10 @@ def read_sensor(client = None):
                 client = create_client()
 
         with serial_lock:
-                #t0 = time.time()
                 clear_RS485(device)
                 data = device.read_registers(registeraddress=0x0000, number_of_registers=2, functioncode=3)
                 clear_RS485(device)
-                #print(f"HG803 read time: [{time.time() - t0:.3f}s]")
+
         time.sleep(0.1) # avoid conflict with other devices in RS485 communication
         temperature = data[0]/100 # sensor data type = magnified 100 times
         humidity = data[1]/100

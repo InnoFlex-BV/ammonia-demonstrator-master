@@ -1,9 +1,7 @@
-import threading
 import time
 import minimalmodbus
-from common_config import create_client, create_device, clear_RS485, strong_clear_RS485
+from common_config import create_client, create_device, clear_RS485, strong_clear_RS485, serial_lock
 
-serial_lock = threading.Lock()
 
 
 class RelayControl:
@@ -23,8 +21,9 @@ class RelayControl:
             self.client.loop_start()
         else:
             self.client = client
+
         self.topic = mqtt_topic
-        self.client.on_message = self.on_message
+        self.client.message_callback_add(self.topic, self.on_message)
         self.client.subscribe(self.topic)
 
 
@@ -41,28 +40,41 @@ class RelayControl:
     def on_message(self, client, userdata, msg):
         try:
             payload_str = msg.payload.decode().strip().lower() # all string turn into lower case letters
-            self.new_status = payload_str == "true"
-            print(f"[HeaterControl] received new status {self.new_status}")
+            # self.new_status = payload_str == "true"
+            if payload_str == "true":
+                self.new_status = True
+            elif payload_str == "false":
+                self.new_status = False
+            else:
+                print(f"[HeaterControl] Invalid payload: {payload_str}")
+                return            
+            print(f"[HeaterControl] received new status: {self.new_status}")
         except Exception as e:
             print(f"Error: {e}")
         
     def relay_control(self):
+        # print("[HeaterControll] relay_control() loop running, old =", self.old_status, "new =", self.new_status)
         if self.relay is None:
             print("[HeaterControll] Heater is not initialized.")
             return
+        if self.new_status is not None and self.new_status == self.old_status:
+            return
 
-        if self.new_status is not None and self.new_status != self.old_status:
-            with self.lock:
-                strong_clear_RS485(self.relay)
-                if self.new_status:
-                    self.relay.write_bit(registeraddress=0, value=1, functioncode=5)
-                    time.sleep(0.1)
-                    print(f"[HeaterControll] Heater ON")
-                else:
-                    self.relay.write_bit(registeraddress=0, value=0, functioncode=5)
-                    time.sleep(0.1)
-                    print(f"[HeaterControll] Heater OFF")
+        with self.lock:
+            try:
+                if self.new_status is not None and self.new_status != self.old_status:
+                    strong_clear_RS485(self.relay)
+                    if self.new_status:
+                        self.relay.write_bit(registeraddress=0, value=1, functioncode=5)
+                        time.sleep(0.1)
+                        print(f"[HeaterControll] Heater ON")
+                    else:
+                        self.relay.write_bit(registeraddress=0, value=0, functioncode=5)
+                        time.sleep(0.1)
+                        print(f"[HeaterControll] Heater OFF")
                 self.old_status = self.new_status
+            except Exception as e:
+                print(f"Relay write error: {e}")
     
 
     def relay_close(self):

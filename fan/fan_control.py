@@ -1,8 +1,7 @@
-from common_config import create_device, create_client, clear_RS485
-import threading
+from common_config import create_device, create_client, clear_RS485, serial_lock
 import time
 
-serial_lock = threading.Lock()
+
 
 class FanControll:
     def __init__(self, slave_address=4, mqtt_topic="master/inlet/fan_in", client = None):
@@ -19,15 +18,16 @@ class FanControll:
             self.client.loop_start()
         else:
             self.client = client
+
         self.topic = mqtt_topic
-        self.client.on_message = self.on_message
+        self.client.message_callback_add(self.topic, self.on_message)
         self.client.subscribe(self.topic)
 
 
     def fan_initialzation(self):
         self.device = create_device(self.slave_address)
-
-        clear_RS485(self.device)
+        
+        # clear_RS485(self.device)
         with self.lock:
             self.device.write_register(registeraddress=6, value=1, functioncode=6)
             time.sleep(0.25)
@@ -42,19 +42,20 @@ class FanControll:
         try:
             speed = int(float(msg.payload.decode()))
             self.new_speed = speed
-            print(f"received new speed {self.new_speed}%")
+            print(f"[FanControll] Received new speed {self.new_speed}%")
         except Exception as e:
             print(f"Error: {e}")
 
     
     def fan_control(self):
+        # print("[FanControll] fan_control() loop running, old =", self.old_speed, "new =", self.new_speed)
         if self.device is None:
             print("[FanControll] Fan not initialized.")
             return
 
         if self.new_speed is not None and self.new_speed != self.old_speed:
             with self.lock:
-                clear_RS485(self.device)
+                # clear_RS485(self.device)
                 self.device.write_register(registeraddress=30, value=self.new_speed, functioncode=6)
                 time.sleep(0.1)
                 print(f"[FanControll] Set fan speed to {self.new_speed}%")
@@ -63,7 +64,7 @@ class FanControll:
 
     def fan_stop(self):
         with self.lock:
-            clear_RS485(self.device)
+            # clear_RS485(self.device)
             self.device.write_register(registeraddress=30, value=0, functioncode=6)
             time.sleep(0.1)
             print("[Fan Controll] Fan stopped. Speed = 0")
