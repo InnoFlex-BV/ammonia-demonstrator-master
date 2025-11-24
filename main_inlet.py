@@ -4,6 +4,8 @@ from sensor.read_gas import read_sensor as read_gas
 from sensor.read_HG803 import read_sensor as read_HG803
 from fan.fan_control import FanControll
 from heater.relay_control import RelayControl
+from pump.pump_control import PumpControll
+
 
 
 mqtt_client = create_client()
@@ -12,6 +14,7 @@ mqtt_client.loop_start()
 """ create objects """
 fan_in = None
 heater_relay = None
+ammonia_pump = None
 
 
 
@@ -26,6 +29,10 @@ try:
     heater_relay.relay_initialization()
     time.sleep(1)
 
+    ammonia_pump = PumpControll(slave_address=20, mqtt_topic = "master/inlet/ammonia_pump", client = mqtt_client)
+    ammonia_pump.pump_initialzation()
+    time.sleep(1)
+
     """  start multi thread """
     tasks = [
         {"func": lambda: read_gas(client=mqtt_client), "interval": 2, "next_run": 0},
@@ -33,6 +40,7 @@ try:
         
         {"func": heater_relay.relay_control, "interval": 4, "next_run": 0},
         {"func": fan_in.fan_control, "interval": 5, "next_run": 0},
+        {"func": ammonia_pump.pump_control, "interval": 5, "next_run": 0},
     ]
 
 
@@ -63,5 +71,11 @@ finally:
             heater_relay.relay_close()
         except Exception as e:
             print(f"Error closing heater relay: {e}")
+       
+    if ammonia_pump is not None:
+        try:
+            ammonia_pump.pump_stop()
+        except Exception as e:
+            print(f"Error stopping pump: {e}")
 
     print("All devices cleaned up.")
