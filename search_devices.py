@@ -7,7 +7,7 @@ def build_read_cmd(addr):
     return frame
 
 
-baudrates = [9600]
+baudrates = [4800,9600]
 
 
 try:
