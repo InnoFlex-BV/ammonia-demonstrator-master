@@ -2,6 +2,7 @@ import time
 from common_config import create_client
 from sensor.read_gas import read_sensor as read_gas
 from sensor.read_HG803 import read_sensor as read_HG803
+from sensor.read_ammonia import read_sensor as read_ammonia
 from fan.fan_control import FanControll
 from heater.relay_control import RelayControl
 from pump.pump_control import PumpControll
@@ -37,6 +38,7 @@ try:
     tasks = [
         {"func": lambda: read_gas(client=mqtt_client), "interval": 2, "next_run": 0},
         {"func": lambda: read_HG803(client=mqtt_client), "interval": 3, "next_run": 0},
+        {"func": lambda: read_ammonia(client=mqtt_client), "interval": 3, "next_run": 0},
         
         {"func": heater_relay.relay_control, "interval": 4, "next_run": 0},
         {"func": fan_in.fan_control, "interval": 5, "next_run": 0},
