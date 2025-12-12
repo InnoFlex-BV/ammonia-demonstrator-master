@@ -1,9 +1,8 @@
-from common_config import create_device, create_client, clear_RS485,serial_lock
+from common_config import create_client, clear_RS485,serial_lock
 import time
 
 
-def read_sensor(client = None):
-        device = create_device(slave_address=3)
+def read_sensor(device, client = None):
         if client is None:
                 client = create_client()
 

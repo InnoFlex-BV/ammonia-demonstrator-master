@@ -1,11 +1,10 @@
 import time
-from common_config import create_client
-from sensor.read_gas import read_sensor as read_gas
+from common_config import create_device, create_client
 from sensor.read_HG803 import read_sensor as read_HG803
-from sensor.read_ammonia import read_sensor as read_ammonia
 from fan.fan_control import FanControll
 from heater.relay_control import RelayControl
 from pump.pump_control import PumpControll
+# from powermeter.read_powermeter import read_power
 
 
 
@@ -16,6 +15,8 @@ mqtt_client.loop_start()
 fan_in = None
 heater_relay = None
 ammonia_pump = None
+HG803_sensor = create_device(slave_address=3)
+# Powermeter = create_device(slave_address=60)
 
 
 
@@ -36,10 +37,8 @@ try:
 
     """  start multi thread """
     tasks = [
-        {"func": lambda: read_gas(client=mqtt_client), "interval": 2, "next_run": 0},
-        {"func": lambda: read_HG803(client=mqtt_client), "interval": 3, "next_run": 0},
-        {"func": lambda: read_ammonia(client=mqtt_client), "interval": 3, "next_run": 0},
-        
+        {"func": lambda: read_HG803(device=HG803_sensor, client=mqtt_client), "interval": 3, "next_run": 0},
+        # {"func": lambda: read_power(device=Powermeter, client=mqtt_client), "interval": 3, "next_run": 0},
         {"func": heater_relay.relay_control, "interval": 4, "next_run": 0},
         {"func": fan_in.fan_control, "interval": 5, "next_run": 0},
         {"func": ammonia_pump.pump_control, "interval": 5, "next_run": 0},
@@ -50,7 +49,10 @@ try:
         now = time.time()
         for t in tasks:
             if now  >= t["next_run"]:
-                t["func"]()
+                try:
+                    t["func"]()
+                except Exception as e:
+                    print(f"Task {t['func'].__name__} error: {e}")
                 t["next_run"] = now + t["interval"]
         time.sleep(0.01)
 
