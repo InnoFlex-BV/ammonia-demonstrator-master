@@ -4,6 +4,7 @@ from sensor.read_HG803 import read_sensor as read_HG803
 from fan.fan_control import FanControll
 from heater.relay_control import RelayControl
 from pump.pump_control import PumpControll
+import hotend.PIDcontroller_control
 # from powermeter.read_powermeter import read_power
 
 
@@ -16,6 +17,7 @@ fan_in = None
 heater_relay = None
 ammonia_pump = None
 HG803_sensor = create_device(slave_address=3)
+hotend_controller = create_device(slave_address=25)
 # Powermeter = create_device(slave_address=60)
 
 
@@ -35,6 +37,10 @@ try:
     ammonia_pump.pump_initialzation()
     time.sleep(1)
 
+    """  set up hot-end """
+    hotend.PIDcontroller_control.controller_initialization(hotend_controller)
+    hotend.PIDcontroller_control.controller_setup(device=hotend_controller, SV=90, K_p=1, K_i=0.1, K_d=0.02)
+
     """  start multi thread """
     tasks = [
         {"func": lambda: read_HG803(device=HG803_sensor, client=mqtt_client), "interval": 3, "next_run": 0},
@@ -42,6 +48,7 @@ try:
         {"func": heater_relay.relay_control, "interval": 4, "next_run": 0},
         {"func": fan_in.fan_control, "interval": 5, "next_run": 0},
         {"func": ammonia_pump.pump_control, "interval": 5, "next_run": 0},
+        {"func": lambda: hotend.PIDcontroller_control.controller_read_input(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature"), "interval": 5, "next_run": 0},        
     ]
 
 
@@ -64,6 +71,8 @@ except Exception as e:
 
 finally:
     # cleanup all devices in RS485
+    hotend.PIDcontroller_control.controller_stop(device=hotend_controller)
+
     if fan_in is not None:
         try:
             fan_in.fan_stop()
@@ -81,5 +90,6 @@ finally:
             ammonia_pump.pump_stop()
         except Exception as e:
             print(f"Error stopping pump: {e}")
+
 
     print("All devices cleaned up.")
