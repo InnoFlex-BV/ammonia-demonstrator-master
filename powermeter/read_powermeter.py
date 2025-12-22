@@ -1,8 +1,10 @@
 from common_config import create_client, clear_RS485, serial_lock
+import minimalmodbus
 import struct
 import time
 
-def read_power(device, client = None):
+def read_power(device = minimalmodbus.Instrument, 
+               client = None):
     if client is None:
         client = create_client()
     

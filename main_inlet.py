@@ -5,7 +5,7 @@ from fan.fan_control import FanControll
 from heater.relay_control import RelayControl
 from pump.pump_control import PumpControll
 import hotend.PIDcontroller_control
-# from powermeter.read_powermeter import read_power
+from powermeter.read_powermeter import read_power
 
 
 
@@ -18,7 +18,7 @@ heater_relay = None
 ammonia_pump = None
 HG803_sensor = create_device(slave_address=3)
 hotend_controller = create_device(slave_address=25)
-# Powermeter = create_device(slave_address=60)
+Powermeter = create_device(slave_address=60)
 
 
 
@@ -44,11 +44,11 @@ try:
     """  start multi thread """
     tasks = [
         {"func": lambda: read_HG803(device=HG803_sensor, client=mqtt_client), "interval": 3, "next_run": 0},
-        # {"func": lambda: read_power(device=Powermeter, client=mqtt_client), "interval": 3, "next_run": 0},
         {"func": heater_relay.relay_control, "interval": 4, "next_run": 0},
         {"func": fan_in.fan_control, "interval": 5, "next_run": 0},
         {"func": ammonia_pump.pump_control, "interval": 5, "next_run": 0},
-        {"func": lambda: hotend.PIDcontroller_control.controller_read_status(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature"), "interval": 5, "next_run": 0},        
+        {"func": lambda: hotend.PIDcontroller_control.controller_read_status(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature"), "interval": 5, "next_run": 0},       
+        {"func": lambda: read_power(device=Powermeter, client=mqtt_client), "interval": 5, "next_run": 0}, 
     ]
 
 
