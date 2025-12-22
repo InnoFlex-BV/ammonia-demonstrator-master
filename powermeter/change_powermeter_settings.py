@@ -3,7 +3,7 @@ import struct
 import time
 
 
-powermeter = minimalmodbus.Instrument('/dev/ttyACM0', 1) # dfault address
+powermeter = minimalmodbus.Instrument('/dev/ttyUSB0', 1) # dfault address
 powermeter.serial.baudrate = 9600
 powermeter.serial.bytesize = 8
 powermeter.serial.parity = minimalmodbus.serial.PARITY_NONE # default

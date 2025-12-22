@@ -39,7 +39,7 @@ try:
 
     """  set up hot-end """
     hotend.PIDcontroller_control.controller_initialization(hotend_controller)
-    hotend.PIDcontroller_control.controller_setup(device=hotend_controller, SV=90, K_p=1, K_i=0.1, K_d=0.02)
+    hotend.PIDcontroller_control.controller_setup(device=hotend_controller, SV=85, K_p=1, K_i=0.1, K_d=0.02)
 
     """  start multi thread """
     tasks = [
@@ -48,7 +48,7 @@ try:
         {"func": heater_relay.relay_control, "interval": 4, "next_run": 0},
         {"func": fan_in.fan_control, "interval": 5, "next_run": 0},
         {"func": ammonia_pump.pump_control, "interval": 5, "next_run": 0},
-        {"func": lambda: hotend.PIDcontroller_control.controller_read_input(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature"), "interval": 5, "next_run": 0},        
+        {"func": lambda: hotend.PIDcontroller_control.controller_read_status(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature"), "interval": 5, "next_run": 0},        
     ]
 
 

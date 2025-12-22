@@ -1,4 +1,4 @@
-from common_config import serial_lock, create_client, clear_RS485
+from common_config import serial_lock, create_client, clear_RS485, strong_clear_RS485
 import minimalmodbus
 import time
 
@@ -35,7 +35,7 @@ def controller_setup(device:minimalmodbus.Instrument,
     print("[HotEndControl] Hot End control parameter set.")
 
 
-def controller_read_input(device:minimalmodbus.Instrument,
+def controller_read_status(device:minimalmodbus.Instrument,
                           client = None,
                           mqtt_topic = None):
     if client is None:
@@ -43,15 +43,18 @@ def controller_read_input(device:minimalmodbus.Instrument,
     with serial_lock:
         clear_RS485(device)
         data = device.read_register(registeraddress=0x0000, functioncode=3)
+        output = device.read_register(registeraddress=0x0003, functioncode=3)
         clear_RS485(device)
     time.sleep(0.1)
     client.publish(mqtt_topic, data)
-    print(f"[HotEndControl] Hot End temperature {data} degree.")
+    print(f"[HotEndControl] Hot End temperature {data} degree. Hot End output: {output}%.")
 
 
 def controller_stop(device: minimalmodbus.Instrument):
     with serial_lock:
-        device.write_register(registeraddress=0x0002, value=25, functioncode=6) # try to stop the PID output
+        strong_clear_RS485(device)
         device.write_register(registeraddress=0x0004, value=False, functioncode=6) # turn off self-tuning
         time.sleep(0.1)
+        device.write_register(registeraddress=0x0009, value=0, functioncode=6) # K_p=0 --> stop PID control
+        strong_clear_RS485(device)
     print("[HotEndControl] Hot End has been turned off.")

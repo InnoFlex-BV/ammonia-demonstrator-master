@@ -1,4 +1,6 @@
 import time
+import sys
+sys.path.append('/home/innoflex/ammonia-demonstrator-master')
 from common_config import create_client
 from pump.pump_control import PumpControll
 
