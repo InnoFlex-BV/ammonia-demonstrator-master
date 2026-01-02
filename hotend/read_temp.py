@@ -13,4 +13,5 @@ def read_temp(client = None):
 
     time.sleep(0.1)
     temp = value
-    print(f"[Hot-End] Temperature: {temp:1f}")
+    client.publish("master/inlet/hotend_temperature", temp)
+    print(f"[Hot-End] Temperature: {temp:1f} degree.")
