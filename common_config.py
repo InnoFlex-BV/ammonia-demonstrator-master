@@ -13,7 +13,7 @@ broker_ip = "127.0.0.1"
 common_client = mqtt.Client(client_id="InletPi")
 common_client.connect(broker_ip, 1883, 60)
 
-PORT = "/dev/ttyUSB0"
+PORT = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_B001G7E1-if00-port0"
 
 devices = {}
 

@@ -2,7 +2,7 @@ import minimalmodbus
 from time import sleep
 
 
-HG803 = minimalmodbus.Instrument('/dev/ttyUSB0', 1)
+HG803 = minimalmodbus.Instrument('/dev/ttyUSB0', 3)
 HG803.serial.baudrate = 9600
 HG803.serial.bytesize = 8
 HG803.serial.parity = minimalmodbus.serial.PARITY_NONE
