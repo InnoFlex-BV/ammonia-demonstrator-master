@@ -26,7 +26,7 @@ try:
 
     """  initializations of devices """
     fan_in = FanControll(slave_address=4, mqtt_topic="master/inlet/fan_in", client = mqtt_client)
-    fan_in.fan_initialzation()
+    fan_in.fan_initialization()
     time.sleep(1)
 
     heater_relay = RelayControl(slave_address=5, mqtt_topic = "master/inlet/heater_relay", client = mqtt_client)
@@ -34,7 +34,7 @@ try:
     time.sleep(1)
 
     ammonia_pump = PumpControll(slave_address=20, mqtt_topic = "master/inlet/ammonia_pump", client = mqtt_client)
-    ammonia_pump.pump_initialzation()
+    ammonia_pump.pump_initialization()
     time.sleep(1)
 
     """  set up hot-end """
@@ -92,4 +92,7 @@ finally:
             print(f"Error stopping pump: {e}")
 
 
+    # Cleanup MQTT client (only once, after all devices are stopped)
+    mqtt_client.loop_stop()
+    mqtt_client.disconnect()
     print("All devices cleaned up.")

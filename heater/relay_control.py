@@ -53,34 +53,30 @@ class RelayControl:
             print(f"Error: {e}")
         
     def relay_control(self):
-        # print("[HeaterControll] relay_control() loop running, old =", self.old_status, "new =", self.new_status)
         if self.relay is None:
-            print("[HeaterControll] Heater is not initialized.")
+            print("[HeaterControl] Heater is not initialized.")
             return
-        if self.new_status is not None and self.new_status == self.old_status:
+        if self.new_status is None or self.new_status == self.old_status:
             return
 
         with self.lock:
             try:
-                if self.new_status is not None and self.new_status != self.old_status:
-                    strong_clear_RS485(self.relay)
-                    if self.new_status:
-                        self.relay.write_bit(registeraddress=0, value=1, functioncode=5)
-                        time.sleep(0.1)
-                        print(f"[HeaterControll] Heater ON")
-                    else:
-                        self.relay.write_bit(registeraddress=0, value=0, functioncode=5)
-                        time.sleep(0.1)
-                        print(f"[HeaterControll] Heater OFF")
+                strong_clear_RS485(self.relay)
+                if self.new_status:
+                    self.relay.write_bit(registeraddress=0, value=1, functioncode=5)
+                    time.sleep(0.1)
+                    print("[HeaterControl] Heater ON")
+                else:
+                    self.relay.write_bit(registeraddress=0, value=0, functioncode=5)
+                    time.sleep(0.1)
+                    print("[HeaterControl] Heater OFF")
                 self.old_status = self.new_status
             except Exception as e:
-                print(f"Relay write error: {e}")
+                print(f"[HeaterControl] Relay write error: {e}")
     
 
     def relay_close(self):
         with self.lock:
             strong_clear_RS485(self.relay)
             self.relay.write_bit(registeraddress=0, value=0, functioncode=5)
-        self.client.loop_stop()
-        self.client.disconnect()
         print("[HeaterControl] Heater OFF")
