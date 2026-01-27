@@ -7,17 +7,32 @@ import time
 
 serial_lock = threading.Lock()
 
-
-# initialize MQTT client
-broker_ip = "127.0.0.1"
-common_client = mqtt.Client(client_id="InletPi")
-common_client.connect(broker_ip, 1883, 60)
-
+# Configuration
+BROKER_IP = "127.0.0.1"
+BROKER_PORT = 1883
 PORT = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_B001G7E1-if00-port0"
 
+# Shared state
 devices = {}
+_mqtt_client = None
+
+
+def create_client():
+    """Create or return the shared MQTT client with error handling."""
+    global _mqtt_client
+    if _mqtt_client is None:
+        try:
+            _mqtt_client = mqtt.Client(client_id="InletPi")
+            _mqtt_client.connect(BROKER_IP, BROKER_PORT, 60)
+            print(f"[MQTT] Connected to broker at {BROKER_IP}:{BROKER_PORT}")
+        except Exception as e:
+            print(f"[MQTT] Failed to connect to broker: {e}")
+            raise
+    return _mqtt_client
+
 
 def create_device(slave_address):
+    """Create or return a cached Modbus device for the given slave address."""
     if slave_address in devices:
         return devices[slave_address]
     common_device = minimalmodbus.Instrument(PORT, slave_address)
@@ -30,9 +45,6 @@ def create_device(slave_address):
 
     devices[slave_address] = common_device
     return common_device
-
-def create_client():
-    return common_client
 
 
 def clear_RS485(device: minimalmodbus.Instrument):

@@ -24,49 +24,49 @@ class FanControll:
         self.client.subscribe(self.topic)
 
 
-    def fan_initialzation(self):
+    def fan_initialization(self):
         self.device = create_device(self.slave_address)
-        
-        # clear_RS485(self.device)
+
         with self.lock:
             self.device.write_register(registeraddress=6, value=1, functioncode=6)
             time.sleep(0.25)
             self.device.write_register(registeraddress=7, value=1, functioncode=6)
-            time.sleep(0.25)    
+            time.sleep(0.25)
             self.device.write_register(registeraddress=30, value=1, functioncode=6)
             time.sleep(0.25)
-            print("fan_in initialization finished. Current speed: 0")
+            print("[FanControl] Initialization finished. Current speed: 0")
 
 
     def on_message(self, client, userdata, msg):
         try:
             speed = int(float(msg.payload.decode()))
+            # Validate speed bounds (0-100%)
+            if speed < 0 or speed > 100:
+                print(f"[FanControl] Invalid speed {speed}%, must be 0-100")
+                return
             self.new_speed = speed
-            print(f"[FanControll] Received new speed {self.new_speed}%")
+            print(f"[FanControl] Received new speed {self.new_speed}%")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"[FanControl] Error parsing message: {e}")
 
     
     def fan_control(self):
-        # print("[FanControll] fan_control() loop running, old =", self.old_speed, "new =", self.new_speed)
         if self.device is None:
-            print("[FanControll] Fan not initialized.")
+            print("[FanControl] Fan not initialized.")
             return
 
-        if self.new_speed is not None and self.new_speed != self.old_speed:
+        # Copy to local variable to avoid race condition with MQTT callback
+        speed = self.new_speed
+        if speed is not None and speed != self.old_speed:
             with self.lock:
-                # clear_RS485(self.device)
-                self.device.write_register(registeraddress=30, value=self.new_speed, functioncode=6)
+                self.device.write_register(registeraddress=30, value=speed, functioncode=6)
                 time.sleep(0.1)
-                print(f"[FanControll] Set fan speed to {self.new_speed}%")
-                self.old_speed = self.new_speed
+                print(f"[FanControl] Set fan speed to {speed}%")
+                self.old_speed = speed
     
 
     def fan_stop(self):
         with self.lock:
-            # clear_RS485(self.device)
             self.device.write_register(registeraddress=30, value=0, functioncode=6)
             time.sleep(0.1)
-            print("[Fan Controll] Fan stopped. Speed = 0")
-            self.client.loop_stop()
-            self.client.disconnect()
+            print("[FanControl] Fan stopped. Speed = 0")

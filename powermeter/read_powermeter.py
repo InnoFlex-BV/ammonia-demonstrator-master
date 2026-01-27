@@ -3,8 +3,8 @@ import minimalmodbus
 import struct
 import time
 
-def read_power(device = minimalmodbus.Instrument, 
-               client = None):
+def read_power(device: minimalmodbus.Instrument,
+               client=None):
     if client is None:
         client = create_client()
     
@@ -21,4 +21,4 @@ def read_power(device = minimalmodbus.Instrument,
 
     client.publish("slave/powerbox/total_import", total_import)
     client.publish("slave/powerbox/total_export", total_export)
-    print(f"[Powermeter] Total Import: {total_import} kWh; Total Export:L {total_export} kWh")
+    print(f"[Powermeter] Total Import: {total_import} kWh; Total Export: {total_export} kWh")

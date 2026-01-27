@@ -29,8 +29,7 @@ class PumpControll:
 
     def pump_initialzation(self):
         self.device = create_device(self.slave_address)
-        
-        # clear_RS485(self.device)
+
         with self.lock:
             # busmode = 1
             # ini_direction = 2
@@ -47,37 +46,35 @@ class PumpControll:
     def on_message(self, client, userdata, msg):
         try:
             pump_pwm = int(float(msg.payload.decode()))
+            # Validate PWM bounds (0-100%)
+            if pump_pwm < 0 or pump_pwm > 100:
+                print(f"[PumpControl] Invalid PWM {pump_pwm}%, must be 0-100")
+                return
             self.new_pump_pwm = pump_pwm
-            print(f"[PumpControll] Received new PWM {self.new_pump_pwm}%")
+            print(f"[PumpControl] Received new PWM {self.new_pump_pwm}%")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"[PumpControl] Error parsing message: {e}")
 
     
     def pump_control(self):
-        # print("[FanControll] fan_control() loop running, old =", sepwmold_pump_pwm"new =", self.new_pump_pwm)
         if self.device is None:
-            print("[PumpControll] Pump not initialized.")
+            print("[PumpControl] Pump not initialized.")
             return
 
-        if self.new_pump_pwm is not None and self.new_pump_pwm != self.old_pump_pwm:
+        # Copy to local variable to avoid race condition with MQTT callback
+        pwm = self.new_pump_pwm
+        if pwm is not None and pwm != self.old_pump_pwm:
             with self.lock:
-                # clear_RS485(self.device)
-                self.new_pump_speed = int(2.55*self.new_pump_pwm) # 0%-100% -> 0-255
+                pump_speed = int(2.55 * pwm)  # 0%-100% -> 0-255
                 reg1 = (1 << 8) + 1
-                reg2 = (self.new_pump_speed << 8) + 10
-                self.device.write_registers(registeraddress=0x03e8, values = [reg1, reg2])
+                reg2 = (pump_speed << 8) + 10
+                self.device.write_registers(registeraddress=0x03e8, values=[reg1, reg2])
                 time.sleep(0.2)
-                print(f"[PumpControll] Set PWM to {self.new_pump_pwm}%")
-                self.old_pump_pwm = self.new_pump_pwm
+                print(f"[PumpControl] Set PWM to {pwm}%")
+                self.old_pump_pwm = pwm
     
 
     def pump_stop(self):
         with self.lock:
-            # clear_RS485(self.device)
-            # stop_reg1 = (1 << 8) + 2
-            # stop_reg2 = (0 << 8) + 10
-            # self.device.write_registers(registeraddress=0x03e8, values = [stop_reg1, stop_reg2])
-            self.device.write_registers(registeraddress=0x03e8, values = [self.stop_reg1, self.stop_reg2])
-            print("[PumpControll] Pump stopped. PWM = 0%")
-            self.client.loop_stop()
-            self.client.disconnect()
+            self.device.write_registers(registeraddress=0x03e8, values=[self.stop_reg1, self.stop_reg2])
+            print("[PumpControl] Pump stopped. PWM = 0%")
