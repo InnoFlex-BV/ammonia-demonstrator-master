@@ -70,6 +70,8 @@ def controller_stop(device: minimalmodbus.Instrument):
         strong_clear_RS485(device)
         device.write_register(registeraddress=0x0004, value=False, functioncode=6) # turn off self-tuning
         time.sleep(0.1)
+        device.write_register(registeraddress=0x0002, value=20, functioncode=6)
+        time.sleep(0.1)
         device.write_register(registeraddress=0x0009, value=0, functioncode=6) # K_p=0 --> stop PID control
         strong_clear_RS485(device)
     print("[HotEndControl] Hot End has been turned off.")
