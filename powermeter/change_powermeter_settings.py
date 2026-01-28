@@ -14,14 +14,15 @@ powermeter.mode = minimalmodbus.MODE_RTU
 powermeter.debug = True
 
 try:
-    # new_address = 60.0 # float
-    # hi, lo = struct.unpack('>HH', struct.pack('>f', new_address))
+    new_address = 60.0 # float
+    hi, lo = struct.unpack('>HH', struct.pack('>f', new_address))
     # powermeter.write_registers(registeraddress=20, values=[hi, lo]) # address register 40021 = registeraddress:20
-    # time.sleep(0.5)
-    new_baudrate = 2 # 2 = 9600 baud
-    hi, lo = struct.unpack('>HH', struct.pack('>f', new_baudrate))
-    powermeter.write_registers(registeraddress=28, values=[hi, lo]) # address register 40021 = registeraddress:20
+    powermeter.write_register(registeraddress=20, value=60, functioncode=6)
     time.sleep(0.5)
+    # new_baudrate = 2 # 2 = 9600 baud
+    # hi, lo = struct.unpack('>HH', struct.pack('>f', new_baudrate))
+    # powermeter.write_registers(registeraddress=28, values=[hi, lo]) # address register 40021 = registeraddress:20
+    # time.sleep(0.5)
 except Exception as e:
     print(f"Error -> {type(e).__name__}: {e}")
 

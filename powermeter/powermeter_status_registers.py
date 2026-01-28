@@ -14,7 +14,7 @@ powermeter.mode = minimalmodbus.MODE_RTU
 
 ## read input & holding registers
 print("Registers: \n")
-regs = [52,72,74,42,12, 14, 16]
+regs = [0,6,12,18,24,30,36,70,72,74,76,78,84]
 for reg in regs:
     try:
         raw_regs = powermeter.read_registers(registeraddress=reg, number_of_registers=2, functioncode=4)

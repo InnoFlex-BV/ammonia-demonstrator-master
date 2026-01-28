@@ -8,8 +8,8 @@ def read_temp():
     
     with serial_lock:
         clear_RS485(device=device)
-        value = device.read_register(registeraddress=0x0000, functioncode=3)
-        # value = device.read_registers(registeraddress=0x0000, number_of_registers=9, functioncode=3)
+        # value = device.read_register(registeraddress=0x0000, functioncode=3)
+        value = device.read_registers(registeraddress=0x0009, number_of_registers=5, functioncode=3)
         clear_RS485(device=device)
 
     time.sleep(0.1)
