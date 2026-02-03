@@ -1,0 +1,226 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
+  <diagram id="ammonia-demonstrator-architecture" name="System Architecture">
+    <mxGraphModel dx="1069" dy="1040" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="AMMONIA DEMONSTRATOR - INLET CONTROL SYSTEM" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#1a1a1a;" parent="1" vertex="1">
+          <mxGeometry x="400" y="20" width="600" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="main_controller_group" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="540" y="80" width="280" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="main_controller_title" value="MAIN ORCHESTRATOR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="580" y="90" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="main_inlet" value="main_inlet.py&#xa;&#xa;• Task Scheduler&#xa;• Device Initialization&#xa;• Graceful Shutdown&#xa;• Error Handling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" parent="1" vertex="1">
+          <mxGeometry x="560" y="115" width="120" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="common_config" value="common_config.py&#xa;&#xa;• Device Factory&#xa;• MQTT Client&#xa;• Serial Lock&#xa;• Buffer Clear" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;" parent="1" vertex="1">
+          <mxGeometry x="690" y="115" width="120" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="rs485_bus" value="RS485 Serial Bus (9600 baud, Modbus RTU)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=3;fontStyle=1;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="30" y="290" width="1080" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="main_to_rs485" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" parent="1" source="main_controller_group" target="rs485_bus" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sensors_group" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="80" y="370" width="440" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sensors_title" value="SENSORS (Input Devices)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="375" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hg803" value="HG803 Sensor&#xa;Slave: 3&#xa;&#xa;Temperature&#xa;Humidity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="100" y="405" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="hg803_file" value="read_HG803.py" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="100" y="495" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="ammonia_sensor" value="Ammonia Sensor&#xa;Slave: 7&#xa;&#xa;NH3 ppm" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="210" y="405" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ammonia_file" value="read_ammonia.py" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="210" y="495" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="gas_sensor" value="Analog Gas&#xa;Slave: 2&#xa;&#xa;2x NH3 Ch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="320" y="405" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="gas_file" value="read_gas.py" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="320" y="495" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="powermeter" value="Power Meter&#xa;Slave: 60&#xa;&#xa;Import/Export&#xa;kWh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="430" y="405" width="80" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="powermeter_file" value="read_powermeter.py" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="415" y="495" width="110" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="actuators_group" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="565" y="370" width="460" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="actuators_title" value="ACTUATORS (Output Devices)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="680" y="375" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="fan" value="Inlet Fan&#xa;Slave: 4&#xa;&#xa;PWM 0-100%&#xa;Register 30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="580" y="405" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="fan_file" value="fan_control.py" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="580" y="495" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="heater" value="Heater Relay&#xa;Slave: 5&#xa;&#xa;ON/OFF&#xa;Coil 0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="690" y="405" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="heater_file" value="relay_control.py" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="690" y="495" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="pump" value="Peristaltic Pump&#xa;Slave: 20&#xa;&#xa;PWM 0-255&#xa;Reg 0x03E8" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="800" y="405" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="pump_file" value="pump_control.py" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="800" y="495" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="hotend" value="Hotend PID&#xa;Slave: 25&#xa;&#xa;PID Control&#xa;SV=85°C" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="910" y="405" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="hotend_file" value="PIDcontroller_control.py" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="895" y="495" width="130" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="hg803_to_rs485" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;entryX=0.15;entryY=1;" parent="1" source="hg803" target="rs485_bus" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ammonia_to_rs485" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;entryX=0.25;entryY=1;" parent="1" source="ammonia_sensor" target="rs485_bus" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gas_to_rs485" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;entryX=0.35;entryY=1;" parent="1" source="gas_sensor" target="rs485_bus" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="power_to_rs485" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;entryX=0.42;entryY=1;" parent="1" source="powermeter" target="rs485_bus" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fan_to_rs485" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;entryX=0.55;entryY=1;" parent="1" source="fan" target="rs485_bus" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="heater_to_rs485" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;entryX=0.65;entryY=1;" parent="1" source="heater" target="rs485_bus" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pump_to_rs485" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;entryX=0.75;entryY=1;" parent="1" source="pump" target="rs485_bus" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="hotend_to_rs485" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;entryX=0.85;entryY=1;" parent="1" source="hotend" target="rs485_bus" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt_broker" value="MQTT Broker&#xa;127.0.0.1:1883" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;strokeWidth=2;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1100" y="120" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="main_to_mqtt" value="paho-mqtt" style="endArrow=classic;startArrow=classic;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=2;strokeColor=#0050ef;" parent="1" source="main_controller_group" target="mqtt_broker" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt_topics" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f4f8;strokeColor=#0050ef;strokeWidth=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="1040" y="230" width="240" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt_topics_title" value="MQTT Topics" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1100" y="235" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pub_topics" value="PUBLISH (Sensors → MQTT)&#xa;&#xa;master/inlet/temperature&#xa;master/inlet/humidity&#xa;master/inlet/ammonia_ppm&#xa;master/inlet/ammonia1&#xa;master/inlet/ammonia2&#xa;master/inlet/hotend_temperature&#xa;slave/powerbox/total_import&#xa;slave/powerbox/total_export" style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=5;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1050" y="260" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="sub_topics" value="SUBSCRIBE (MQTT → Actuators)&#xa;&#xa;master/inlet/fan_in (0-100)&#xa;master/inlet/heater_relay (true/false)&#xa;master/inlet/ammonia_pump (0-100)" style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=5;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1050" y="410" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt_to_topics" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=2;strokeColor=#0050ef;" parent="1" source="mqtt_broker" target="mqtt_topics" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="data_storage_group" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#666666;strokeWidth=2;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="1320" y="80" width="240" height="490" as="geometry" />
+        </mxCell>
+        <mxCell id="data_storage_title" value="DATA COLLECTION &amp; STORAGE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1330" y="90" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="telegraf" value="Telegraf&#xa;&#xa;MQTT Consumer&#xa;→ InfluxDB Writer&#xa;&#xa;telegraf.conf" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="120" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="influxdb" value="InfluxDB 2.0&#xa;&#xa;Organization:&#xa;Ammonia demonstrator&#xa;&#xa;Bucket:&#xa;ammonia demonstrator" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+          <mxGeometry x="1360" y="250" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="subscriber" value="subscriber.py&#xa;test_sub.py&#xa;&#xa;Alternative&#xa;MQTT → InfluxDB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="400" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="utility" value="search_devices.py&#xa;Device Discovery" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffff88;strokeColor=#d6d600;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="500" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt_to_telegraf" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=2;strokeColor=#0e8088;" parent="1" source="mqtt_broker" target="telegraf" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="telegraf_to_influx" value="" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=2;strokeColor=#2D7600;" parent="1" source="telegraf" target="influxdb" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="subscriber_to_influx" value="" style="endArrow=classic;html=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeWidth=2;strokeColor=#2D7600;dashed=1;" parent="1" source="subscriber" target="influxdb" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="600" width="440" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_title" value="MODBUS FUNCTION CODES" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="160" y="605" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_content" value="FC 3: Read Holding Registers (Sensors)&#xa;FC 4: Read Input Registers (Power Meter)&#xa;FC 5: Write Single Coil (Heater Relay ON/OFF)&#xa;FC 6: Write Single Register (Fan Speed)&#xa;FC 16: Write Multiple Registers (Pump)" style="text;html=1;strokeColor=none;fillColor=none;align=left;spacingLeft=10;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="50" y="630" width="300" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="scheduler_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="520" y="600" width="300" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="scheduler_title" value="TASK SCHEDULER INTERVALS" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="570" y="605" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="scheduler_content" value="HG803 Sensor: 3 seconds&#xa;Heater Relay: 4 seconds&#xa;Inlet Fan: 5 seconds&#xa;Peristaltic Pump: 5 seconds&#xa;Hotend PID: 5 seconds&#xa;Polling interval: 10ms" style="text;html=1;strokeColor=none;fillColor=none;align=left;spacingLeft=10;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="530" y="630" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="thread_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="860" y="600" width="240" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="thread_title" value="THREAD SAFETY" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="900" y="605" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="thread_content" value="• serial_lock (threading.Lock)&#xa;• Shared across all controllers&#xa;• Protects RS485 bus access&#xa;• MQTT callbacks thread-safe&#xa;• Local variable copies for&#xa;  race condition prevention" style="text;html=1;strokeColor=none;fillColor=none;align=left;spacingLeft=10;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="870" y="630" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="color_legend" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="1140" y="600" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="color_legend_title" value="COLOR LEGEND" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1180" y="605" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="color_sensor" value="" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="635" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="color_sensor_text" value="Sensors (Input)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1175" y="632" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="color_actuator" value="" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="660" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="color_actuator_text" value="Actuators (Output)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1175" y="657" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="color_mqtt" value="" style="rounded=1;fillColor=#0050ef;strokeColor=#001DBC;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="685" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="color_mqtt_text" value="MQTT Communication" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1175" y="682" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="color_storage" value="" style="rounded=1;fillColor=#60a917;strokeColor=#2D7600;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="710" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="color_storage_text" value="Data Storage" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1175" y="707" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="color_config" value="" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="735" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="color_config_text" value="Configuration" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1175" y="732" width="100" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
