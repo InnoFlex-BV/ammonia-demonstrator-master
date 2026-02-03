@@ -34,21 +34,21 @@ try:
     time.sleep(1)
 
     ammonia_pump = PumpControll(slave_address=20, mqtt_topic = "master/inlet/ammonia_pump", client = mqtt_client)
-    ammonia_pump.pump_initialization()
+    ammonia_pump.pump_initialzation()
     time.sleep(1)
 
     """  set up hot-end """
     hotend.PIDcontroller_control.controller_initialization(hotend_controller)
-    hotend.PIDcontroller_control.controller_setup(device=hotend_controller, SV=85, K_p=25, K_i=1, K_d=50, T=0.2, AR=50)
+    hotend.PIDcontroller_control.controller_setup(device=hotend_controller, SV=85, K_p=5, K_i=10, K_d=9, T=0.2, AR=50)
 
     """  start multi thread """
     tasks = [
-        {"name": "HG803 Sensor", "func": lambda: read_HG803(device=HG803_sensor, client=mqtt_client), "interval": 3, "next_run": 0},
-        {"name": "Heater Relay", "func": heater_relay.relay_control, "interval": 4, "next_run": 0},
+        {"name": "HG803 Sensor", "func": lambda: read_HG803(device=HG803_sensor, client=mqtt_client), "interval": 15, "next_run": 0},
+        {"name": "Heater Relay", "func": heater_relay.relay_control, "interval": 5, "next_run": 0},
         {"name": "Inlet Fan", "func": fan_in.fan_control, "interval": 5, "next_run": 0},
         {"name": "Peristaltic Pump", "func": ammonia_pump.pump_control, "interval": 5, "next_run": 0},
-        {"name": "Hot-end", "func": lambda: hotend.PIDcontroller_control.controller_read_status(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature"), "interval": 5, "next_run": 0},       
-        # {"name": "Powermeter", "func": lambda: read_power(device=Powermeter, client=mqtt_client), "interval": 5, "next_run": 0}, 
+        {"name": "Hot-end", "func": lambda: hotend.PIDcontroller_control.controller_read_status(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature"), "interval": 15, "next_run": 0},       
+        {"name": "Powermeter", "func": lambda: read_power(device=Powermeter, client=mqtt_client), "interval": 15, "next_run": 0}, 
     ]
 
 
@@ -71,6 +71,7 @@ except Exception as e:
 
 finally:
     # cleanup all devices in RS485
+    hotend.PIDcontroller_control.controller_checkout(device=hotend_controller)
     hotend.PIDcontroller_control.controller_stop(device=hotend_controller)
 
     if fan_in is not None:

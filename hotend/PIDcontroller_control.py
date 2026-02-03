@@ -66,14 +66,17 @@ def controller_checkout(device: minimalmodbus.Instrument):
         Pp = device.read_register(registeraddress=0x0009, functioncode=3)
         Ii = device.read_register(registeraddress=0x000A, functioncode=3)
         Dd = device.read_register(registeraddress=0x000B, functioncode=3)
+        ARar = device.read_register(registeraddress=0x000C, functioncode=3)
         Tt = device.read_register(registeraddress=0x000D, functioncode=3)
-        print(f"P: {Pp}, I: {Ii}, D: {Dd}, T: {Tt}")
+        print(f"Tuned Parameters: \n P: {Pp}, I: {Ii}, D: {Dd}, AR: {ARar}, T: {Tt}")
 
 
 def controller_stop(device: minimalmodbus.Instrument):
     with serial_lock:
         strong_clear_RS485(device)
         device.write_register(registeraddress=0x0004, value=0, functioncode=6)  # turn off self-tuning
+        time.sleep(0.1)
+        device.write_register(registeraddress=0x0002, value=20, functioncode=6) # SV=20 (room temperature)
         time.sleep(0.1)
         device.write_register(registeraddress=0x0009, value=0, functioncode=6) # K_p=0 --> stop PID control
         strong_clear_RS485(device)

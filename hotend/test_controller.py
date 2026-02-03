@@ -16,13 +16,13 @@ try:
 
     hotend_controller = create_device(slave_address=25)
     PIDcontroller_control.controller_initialization(hotend_controller)
-    PIDcontroller_control.controller_setup(device=hotend_controller, SV=85, K_p=25, K_i=1, K_d=50, T=4, AR=50)
+    PIDcontroller_control.controller_setup(device=hotend_controller, SV=80, K_p=25, K_i=1, K_d=50, T=4, AR=50)
 
     while True:
         data = PIDcontroller_control.controller_read_status(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature")
         if data > overshoot:
             overshoot = data
-        time.sleep(5)
+        time.sleep(15)
 
 except KeyboardInterrupt:
     print("\n Exiting programm due to keyboard interrupt...")

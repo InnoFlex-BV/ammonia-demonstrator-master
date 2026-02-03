@@ -8,17 +8,17 @@ def read_power(device: minimalmodbus.Instrument,
     if client is None:
         client = create_client()
     
-    with serial_lock:
-        clear_RS485(device)
-        raw_values = device.read_registers(registeraddress=72, number_of_registers=4, functioncode=4)
-        clear_RS485(device)
+    try:
+        with serial_lock:
+            clear_RS485(device)
+            current = device.read_float(registeraddress=6, number_of_registers=2, functioncode=4)
+            current = round(current, 2)
+            active_power = device.read_float(registeraddress=12, number_of_registers=2, functioncode=4)
+            active_power = round(active_power, 2)
+            clear_RS485(device)
+    except Exception as e:
+        print(f"[Powermeter] Error -> {type(e).__name__}: {e}")
 
-    time.sleep(0.1)
-    import_bytes = struct.pack('>HH', raw_values[0], raw_values[1])
-    export_bytes = struct.pack('>HH', raw_values[2], raw_values[3])
-    total_import = struct.unpack('>f', import_bytes)[0]
-    total_export = struct.unpack('>f', export_bytes)[0]
-
-    client.publish("slave/powerbox/total_import", total_import)
-    client.publish("slave/powerbox/total_export", total_export)
-    print(f"[Powermeter] Total Import: {total_import} kWh; Total Export: {total_export} kWh")
+    client.publish("slave/powerbox/active_power", active_power)
+    client.publish("slave/powerbox/current", current)
+    print(f"[Powermeter] Active power: {active_power} W; Current: {current} A")

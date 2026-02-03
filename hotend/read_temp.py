@@ -1,17 +1,20 @@
+import sys
+sys.path.append('/home/innoflex/ammonia-demonstrator-master')
 from common_config import create_device, create_client, clear_RS485, serial_lock
 import time
 
-def read_temp(client = None):
-    device = create_device(slave_address=2)
-    if client is None:
-        client = create_client()
+def read_temp():
+    device = create_device(slave_address=25)
     
     with serial_lock:
         clear_RS485(device=device)
-        value = device.read_register(registeraddress=0x0000, functioncode=3)
+        # value = device.read_register(registeraddress=0x0000, functioncode=3)
+        value = device.read_registers(registeraddress=0x0009, number_of_registers=5, functioncode=3)
         clear_RS485(device=device)
 
     time.sleep(0.1)
-    temp = value
-    client.publish("master/inlet/hotend_temperature", temp)
-    print(f"[Hot-End] Temperature: {temp:1f} degree.")
+    print(f"[Hot-End] Temperature: {value} degree.")
+
+
+if __name__ == "__main__":
+    read_temp()
