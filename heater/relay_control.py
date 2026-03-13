@@ -37,7 +37,7 @@ class RelayControl:
         print("heater initialization finished. Current status: OFF")
 
 
-    def on_message(self, client, userdata, msg):
+    def on_message(self, client, userdata, msg):# turn mqtt message from string into boolean; indication of receiving new message
         try:
             payload_str = msg.payload.decode().strip().lower() # all string turn into lower case letters
             # self.new_status = payload_str == "true"
