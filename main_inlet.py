@@ -2,6 +2,7 @@ import time
 from common_config import create_device, create_client
 from sensor.read_HG803 import read_sensor as read_HG803
 from fan.fan_control import FanControll
+from fan.fan_auto_control import FanAutoControl
 from heater.relay_control import RelayControl
 from pump.pump_control import PumpControll
 import hotend.PIDcontroller_control
@@ -27,7 +28,9 @@ try:
     """  initializations of devices """
     fan_in = FanControll(slave_address=4, mqtt_topic="master/inlet/fan_in", client = mqtt_client)
     fan_in.fan_initialization()
-    time.sleep(1)
+    time.sleep(0.5)
+
+    fan_controller = FanAutoControl(sp_flowrate=250, client=mqtt_client)
 
     heater_relay = RelayControl(slave_address=5, mqtt_topic = "master/inlet/heater_relay", client = mqtt_client)
     heater_relay.relay_initialization()
