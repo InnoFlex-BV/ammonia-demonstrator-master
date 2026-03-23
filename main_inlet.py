@@ -1,10 +1,10 @@
 import time
 from common_config import create_device, create_client
 from sensor.read_HG803 import read_sensor as read_HG803
-from fan.fan_control import FanControll
+from fan.fan_control import FanControl
 from fan.fan_auto_control import FanAutoControl
 from heater.relay_control import RelayControl
-from pump.pump_control import PumpControll
+from pump.pump_control import PumpControl
 import hotend.PIDcontroller_control
 from powermeter.read_powermeter import read_power
 
@@ -26,7 +26,7 @@ Powermeter = create_device(slave_address=60)
 try:
 
     """  initializations of devices """
-    fan_in = FanControll(slave_address=4, mqtt_topic="master/inlet/fan_in", client = mqtt_client)
+    fan_in = FanControl(slave_address=4, mqtt_topic="master/inlet/fan_in_manual", client = mqtt_client)
     fan_in.fan_initialization()
     time.sleep(0.5)
 
@@ -36,7 +36,7 @@ try:
     heater_relay.relay_initialization()
     time.sleep(1)
 
-    ammonia_pump = PumpControll(slave_address=20, mqtt_topic = "master/inlet/ammonia_pump", client = mqtt_client)
+    ammonia_pump = PumpControl(slave_address=20, mqtt_topic = "master/inlet/ammonia_pump", client = mqtt_client)
     ammonia_pump.pump_initialzation()
     time.sleep(1)
 
@@ -51,7 +51,7 @@ try:
         {"name": "Inlet Fan", "func": fan_in.fan_control, "interval": 5, "next_run": 0},
         {"name": "Peristaltic Pump", "func": ammonia_pump.pump_control, "interval": 5, "next_run": 0},
         {"name": "Hot-end", "func": lambda: hotend.PIDcontroller_control.controller_read_status(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature"), "interval": 15, "next_run": 0},       
-        {"name": "Powermeter", "func": lambda: read_power(device=Powermeter, client=mqtt_client), "interval": 15, "next_run": 0}, 
+        # {"name": "Powermeter", "func": lambda: read_power(device=Powermeter, client=mqtt_client), "interval": 15, "next_run": 0}, 
     ]
 
 

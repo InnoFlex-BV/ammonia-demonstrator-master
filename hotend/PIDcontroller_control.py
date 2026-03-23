@@ -56,7 +56,7 @@ def controller_read_status(device:minimalmodbus.Instrument,
         clear_RS485(device)
     time.sleep(0.1)
     client.publish(mqtt_topic, data)
-    print(f"[HotEndControl] Hot End temperature {data} degree. Hot End output: {output}%.")
+    # print(f"[HotEndControl] Hot End temperature {data} degree. Hot End output: {output}%.")
     return data
 
 

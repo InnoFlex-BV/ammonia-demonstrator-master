@@ -48,6 +48,7 @@ class FanControl:
 
 
     def on_message(self, client, userdata, msg):
+        # print(f"[DEBUG] Received Topic: {msg.topic}, Payload: {msg.payload.decode()}")
         try:
             topic = msg.topic
             speed = int(float(msg.payload.decode()))
@@ -71,6 +72,7 @@ class FanControl:
 
         except Exception as e:
             print(f"[FanControl] Error parsing message: {e}")
+            self.client.publish("master/inlet/error", f"[FanControl] Error parsing message: {e}")
 
 
     def on_mode_message(self, client, userdata, msg): # check to mode is auto or manual
@@ -83,15 +85,17 @@ class FanControl:
     def fan_control(self):
         if self.device is None:
             print("[FanControl] Fan not initialized.")
+            self.client.publish("master/inlet/error", "[FanControl] Fan not initialized.")
             return
 
         # Copy to local variable to avoid race condition with MQTT callback
         speed = self.new_speed
-        if speed is not None:
-            if abs(speed-self.old_speed>=1):
+        if speed is not None and speed != self.old_speed:
+            # if abs(speed-self.old_speed>=1):
                 with self.lock:
                     self.device.write_register(registeraddress=30, value=speed, functioncode=6)
                     time.sleep(0.1)
+                    self.client.publish("master/inlet/fan_output", speed)
                     print(f"[FanControl] Set fan speed to {speed}%")
                     self.old_speed = speed
     

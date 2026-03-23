@@ -16,8 +16,8 @@ class FanAutoControl:
         self.client.subscribe(self.sp_flrt_topic)
         
         # PID parameters
-        self.K_p = 0.8
-        self.K_i = 0.2
+        self.K_p = 0.3
+        self.K_i = 0.01
         # self.K_d = 0.05
 
         self.integral = 0
@@ -44,17 +44,28 @@ class FanAutoControl:
     def on_flowrate_message(self, client, userdata, msg):
         try:
             current_flowrate = float(msg.payload.decode())
+            print(f"Received flowrate data from flowmeter: {current_flowrate}")
             now = time.time()
             dt = now - self.last_time
             
             # calculating PID output
             error = self.sp_flowrate - current_flowrate
-            self.integral += error*dt
+            new_integral = self.integral + error*dt
+            potential_output = self.K_p*error + self.K_i*(self.integral + error*dt)
+            if 0<=potential_output<=100:
+                self.integral = new_integral
             output = self.K_p*error + self.K_i*self.integral
-            fan_output = int(max(min(output, 100),30))
+
+            if output<15:
+                fan_output = 0
+            elif output<=30:
+                fan_output = 30
+            else:
+                fan_output = int(max(min(output, 100),30))
 
             self.client.publish(self.output_topic_in, str(fan_output))
             self.client.publish(self.output_topic_out, str(fan_output))
+            print(f"Errpr: {error}, Output: {output}%")
 
             self.previous_error = error
             self.last_time = now

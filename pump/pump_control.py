@@ -3,7 +3,7 @@ import time
 
 
 
-class PumpControll:
+class PumpControl:
     def __init__(self, slave_address=20, mqtt_topic="master/inlet/ammonia_pump", client = None):
         # create an object
         self.slave_address = slave_address

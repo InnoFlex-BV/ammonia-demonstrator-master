@@ -15,11 +15,12 @@ def read_sensor(device, client=None):
 
     # Validate data has expected length
     if len(data) < 2:
-        print(f"[ReadHG803] Error: Expected 2 registers, got {len(data)}")
+        print(f"[ReadHG803] Error: Expected 2 registers, got {len(data)}", flush=True)
+        client.publish("master/inlet/error", f"[ReadHG803] Error: Expected 2 registers, got {len(data)}")
         return
 
     temperature = data[0] / 100  # sensor data type = magnified 100 times
     humidity = data[1] / 100
     client.publish("master/inlet/temperature", temperature)
     client.publish("master/inlet/humidity", humidity)
-    print(f"[ReadHG803] Temperature: {temperature} degree, Humidity: {humidity} %")
+    # print(f"[ReadHG803] Temperature: {temperature} degree, Humidity: {humidity} %")
