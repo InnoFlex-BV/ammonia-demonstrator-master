@@ -65,7 +65,7 @@ class FanAutoControl:
 
             self.client.publish(self.output_topic_in, str(fan_output))
             self.client.publish(self.output_topic_out, str(fan_output))
-            print(f"Errpr: {error}, Output: {output}%")
+            print(f"[Fan Auto Control] Error: {error}, Output: {output}%")
 
             self.previous_error = error
             self.last_time = now

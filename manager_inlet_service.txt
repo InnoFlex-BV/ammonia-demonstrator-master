@@ -1,0 +1,44 @@
+## just a back-up of manager_inlet_servie
+
+for replication, please create a file with following content in:
+innoflex@ammonia-master:/etc/systemd/system $ sudo nano manager_inlet.service
+
+"""
+
+[Unit]
+Description=InletPi MQTT Manager
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u /home/innoflex/ammonia-demonstrator-master/manager_inlet.py
+WorkingDirectory=/home/innoflex/ammonia-demonstrator-master
+# StandardOutput=inherit
+# StandardError=inherit
+Restart=always
+RestartSec=5
+User=innoflex
+
+[Install]
+WantedBy=multi-user.target
+
+"""
+
+and run following code in terminal(after every change):
+
+sudo systemctl daemon-reload
+sudo systemctl restart manager_inlet.service 
+sudo systemctl status manager_inlet.service 
+
+the status should be active then
+
+for checking the status of main_inlet.py (is ruuing or not):
+in ternimal, run 
+"""
+pgrep -fl main_inlet.py
+"""
+
+for reading the output/log from manager_inlet.py (including main_inlet.py):
+in terminal, run
+"""
+sudo journalctl -u manager_inlet.service -f
+"""
