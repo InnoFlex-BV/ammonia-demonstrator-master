@@ -6,7 +6,7 @@ import socket
 import time
 
 
-broker_ip = "ammonia-master.local"
+broker_ip = "127.0.0.1"
 topic_control = "master/inlet/control"
 topic_status = "slave/inlet/status"
 main_script_path  = "/home/innoflex/ammonia-demonstrator-master/main_inlet.py"
@@ -16,7 +16,7 @@ Inlet_process = None
 
 def on_message(client, userdata, msg):
     global Inlet_process
-    command = msg.payload.decode().upper()
+    command = msg.payload.decode().strip().upper()
 
     if command == "START":
         if Inlet_process is None or Inlet_process.poll() is not None:

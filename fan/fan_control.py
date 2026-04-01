@@ -105,3 +105,4 @@ class FanControl:
             self.device.write_register(registeraddress=30, value=0, functioncode=6)
             time.sleep(0.1)
             print("[FanControl] Fan stopped. Speed = 0")
+            self.client.publish("master/inlet/fan_output", 0)

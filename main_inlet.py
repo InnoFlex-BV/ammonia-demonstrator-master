@@ -1,6 +1,7 @@
 import time
 from common_config import create_device, create_client
-from sensor.read_HG803 import read_sensor as read_HG803
+from sensor.HG803.read_HG803 import read_sensor as read_HG803
+from sensor.DiffPressureSensor.read_PressureSensor import read_sensor as read_P
 from fan.fan_control import FanControl
 from fan.fan_auto_control import FanAutoControl
 from heater.relay_control import RelayControl
@@ -19,6 +20,7 @@ heater_relay = None
 ammonia_pump = None
 HG803_sensor = create_device(slave_address=3)
 hotend_controller = create_device(slave_address=25)
+# D_P_sensor = create_device(slave_address=39)
 Powermeter = create_device(slave_address=60)
 
 
@@ -51,7 +53,8 @@ try:
         {"name": "Inlet Fan", "func": fan_in.fan_control, "interval": 5, "next_run": 0},
         {"name": "Peristaltic Pump", "func": ammonia_pump.pump_control, "interval": 5, "next_run": 0},
         {"name": "Hot-end", "func": lambda: hotend.PIDcontroller_control.controller_read_status(device=hotend_controller, client=mqtt_client, mqtt_topic="master/inlet/hotend_temperature"), "interval": 15, "next_run": 0},       
-        # {"name": "Powermeter", "func": lambda: read_power(device=Powermeter, client=mqtt_client), "interval": 15, "next_run": 0}, 
+        # {"name": "Powermeter", "func": lambda: read_power(device=Powermeter, client=mqtt_client), "interval": 15, "next_run": 0},
+        # {"name": "Diff Pressure Sensor", "func": lambda: read_P(device=D_P_sensor, client=mqtt_client), "interval":15, "next_run":0}, 
     ]
 
 

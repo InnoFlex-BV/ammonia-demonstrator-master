@@ -3,7 +3,7 @@ import os
 
 import time
 from common_config import create_device, create_client
-from sensor.read_HG803 import read_sensor as read_HG803
+from sensor.HG803.read_HG803 import read_sensor as read_HG803
 from fan.fan_control import FanControl
 from fan.fan_auto_control import FanAutoControl
 from heater.relay_control import RelayControl
